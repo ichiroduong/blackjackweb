@@ -1,6 +1,6 @@
 //challenge 5 
 let blackjackGame = {
-    'you': {'scoreboard': '#your-score', 'id':'your-flexbox', 'score':0},
+    'you': {'scoreboard': '#your-score', 'id':'your-flexbox', 'score':0, 'bet':0, 'money':500000},
     'bot': {'scoreboard': '#bot-score', 'id':'bot-flexbox', 'score':0},
     'card': ['2', '3' , '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A' ],
     'cardmap': {'2':2, '3':3 , '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, 'J':10, 'Q':10, 'K':10, 'A':[1,11]},
@@ -10,6 +10,8 @@ let blackjackGame = {
     'stand':false,
     'turnisover': false,
     'hit': false,
+
+    
 }
 
 function randomCard(){
@@ -24,8 +26,14 @@ const winSound = new Audio ('./sounds/cash.mp3');
 const lostSound = new Audio ('./sounds/aww.mp3');
 
 
+function betMoney() {
+    YOU['bet'] = prompt('How much do you want to bet?');
+    return YOU['bet'];
+}
+
+
 function blackjackHit() {
-    if(blackjackGame['stand']===false){
+    if(blackjackGame['stand']===false){   
     let card = randomCard();
     console.log(card);
     showCard(YOU, card);
@@ -100,6 +108,7 @@ function sleep(ms) {
 }
 
 async function blackjackStand(){
+    betMoney();     
     if(blackjackGame['hit']===true) {
     
     while(BOT['score']<18) {  
@@ -124,10 +133,14 @@ function computeWinner() {
             winner = YOU;
             console.log('You won!');
             blackjackGame['win']++;
+            YOU['money'] += Math.round(YOU['bet']);
+            
         } else if((YOU['score']<BOT['score']) && (BOT['score']<=21) && (BOT['score']>=16)) {
             winner = BOT;
             console.log('You lost!');
             blackjackGame['loss']++;
+            console.log(YOU['money'] -= YOU['bet']);
+
         } else if(YOU['score']=BOT['score']) {
             console.log('You drew!');
             blackjackGame['draw']++;
@@ -137,6 +150,8 @@ function computeWinner() {
             winner = BOT;
             console.log('You lost!');
             blackjackGame['loss']++;
+            YOU['money'] -= YOU['bet'];
+
 
         } else if((BOT['score']< 16) || (BOT['score']>21)) {
             console.log('You drew!');
@@ -173,6 +188,8 @@ function showWinner() {
 document.querySelector('#win-score').textContent=blackjackGame['win'];
 document.querySelector('#loss-score').textContent=blackjackGame['loss'];
 document.querySelector('#draw-score').textContent=blackjackGame['draw'];
+document.querySelector('#money-amount').textContent=YOU['money'];
+
 
 }
 }
