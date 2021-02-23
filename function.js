@@ -10,8 +10,13 @@ let blackjackGame = {
     'stand':false,
     'turnisover': false,
     'hit': false,
+    'bet': false,
 
     
+}
+
+function showMoney(){
+    document.querySelector('#money-amount').textContent=YOU['money'];
 }
 
 function randomCard(){
@@ -28,11 +33,18 @@ const lostSound = new Audio ('./sounds/aww.mp3');
 
 function betMoney() {
     YOU['bet'] = prompt('How much do you want to bet?');
+    if((YOU['bet']<=YOU['money'])&&(YOU['bet']>0)) {
+    blackjackGame['bet']=true;
     return YOU['bet'];
+
+} else {
+    betMoney();
+}
 }
 
 
 function blackjackHit() {
+    if(YOU['money']>0) {
     if(blackjackGame['stand']===false){   
     let card = randomCard();
     console.log(card);
@@ -40,6 +52,7 @@ function blackjackHit() {
     updateScore(card,YOU);
     showScore(YOU);
     blackjackGame['hit']=true
+}
 }
 }
 
@@ -77,6 +90,8 @@ function blackjackDeal() {
 
     blackjackGame['stand']=false;
     blackjackGame['turnisover']=false;
+    blackjackGame['bet']=false;
+    blackjackGame['hit']=false;
 
 }
 }
@@ -108,8 +123,10 @@ function sleep(ms) {
 }
 
 async function blackjackStand(){
-    betMoney();     
+    
     if(blackjackGame['hit']===true) {
+    betMoney();     
+    if(blackjackGame['bet']=true) { 
     
     while(BOT['score']<18) {  
     let card = randomCard();
@@ -121,6 +138,7 @@ async function blackjackStand(){
     showWinner();
     blackjackGame['turnisover']=true;
     blackjackGame['stand']=true;
+}
 }
 }
 
@@ -189,8 +207,6 @@ document.querySelector('#win-score').textContent=blackjackGame['win'];
 document.querySelector('#loss-score').textContent=blackjackGame['loss'];
 document.querySelector('#draw-score').textContent=blackjackGame['draw'];
 document.querySelector('#money-amount').textContent=YOU['money'];
-
-
 }
 }
 
